@@ -10,8 +10,11 @@
     "serve": "BUILD_MODE=development webpack serve"
   },
   "dependencies": {
+    "konva": "^7.2.1",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-dom": "^17.0.1",
+    "react-konva": "^17.0.0-0",
+    "use-image": "^1.0.6"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",
