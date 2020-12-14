@@ -1,0 +1,7 @@
+# OS & IDE
+.DS_Store
+.idea
+
+# Build
+build
+node_modules
