@@ -9,6 +9,12 @@ import useImage from "use-image";
 
 import ImageSrc from "assets/image.jpg"
 import Styles from "./ImageFragment.css"
+import {classes} from "src/utils";
+
+interface Point {
+  x: number,
+  y: number
+}
 
 const SCALE_COEFFICIENT = 1.1
 
@@ -17,21 +23,21 @@ export default function ImageFragment() {
   const containerRef = useRef<HTMLDivElement>()
   const stageRef = useRef<Konva.Stage>();
 
-  function onWheel(event) {
+  function redrawImage(zoom: boolean, coefficient: number, point: Point) {
     let stage = stageRef.current;
     let container = containerRef.current;
 
     let scale = stage.scaleX();
-    let pointerPosition = stage.getPointerPosition();
+    let pointerPosition = point;
 
     let stageToPointerVector = {
       x: (pointerPosition.x - stage.x()) / scale,
       y: (pointerPosition.y - stage.y()) / scale,
     };
 
-    let newScale = event.evt.deltaY < 0
-      ? scale * SCALE_COEFFICIENT
-      : scale / SCALE_COEFFICIENT;
+    let newScale = zoom
+      ? scale * coefficient
+      : scale / coefficient;
 
     let newStagePosition = {
       x: pointerPosition.x - stageToPointerVector.x * newScale,
@@ -87,6 +93,36 @@ export default function ImageFragment() {
     stage.batchDraw();
   }
 
+  function onWheel(e) {
+    redrawImage(
+      e.evt.deltaY < 0,
+      SCALE_COEFFICIENT,
+      stageRef.current.getPointerPosition()
+    )
+  }
+
+  function onScaleInButtonClick() {
+    redrawImage(
+      true,
+      SCALE_COEFFICIENT,
+      {
+        x: containerRef.current.clientWidth / 2,
+        y: containerRef.current.clientHeight / 2
+      }
+    )
+  }
+
+  function onScaleOutButtonClick() {
+    redrawImage(
+      false,
+      SCALE_COEFFICIENT,
+      {
+        x: containerRef.current.clientWidth / 2,
+        y: containerRef.current.clientHeight / 2
+      }
+    )
+  }
+
   return (
     <div className={Styles.Fragment}>
       <div ref={containerRef}
@@ -101,6 +137,17 @@ export default function ImageFragment() {
                    height={450}/>
           </Layer>
         </Stage>
+        <div className={Styles.Controllers}>
+          <div className={classes("material-icons", Styles.Controller)}
+               onClick={onScaleInButtonClick}>
+            add
+          </div>
+          <div style={{marginTop: 20}}
+               className={classes("material-icons", Styles.Controller)}
+               onClick={onScaleOutButtonClick}>
+            remove
+          </div>
+        </div>
       </div>
     </div>
   )

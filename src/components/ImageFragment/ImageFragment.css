@@ -8,9 +8,30 @@
 }
 
 .Container {
+  position: relative;
   height: 450px;
   width: 800px;
   border-radius: 5px;
   box-shadow: 0 10px 20px grey;
   overflow: hidden;
+}
+
+.Controllers {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.Controller {
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+  background: white;
+  user-select: none;
 }
