@@ -13,15 +13,20 @@
   width: 800px;
   border-radius: 5px;
   box-shadow: 0 10px 20px grey;
+  overflow: scroll;
+}
+
+.StageWrap {
+  height: 450px;
+  width: 800px;
   overflow: hidden;
 }
 
 .Controllers {
   position: absolute;
   top: 50%;
-  right: 0;
+  right: 30px;
   transform: translateY(-50%);
-  width: 80px;
   display: flex;
   flex-direction: column;
   align-items: center;
