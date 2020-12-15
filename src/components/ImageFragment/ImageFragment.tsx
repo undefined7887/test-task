@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 import Konva from "konva";
 import {
   Stage,
@@ -36,7 +36,9 @@ export default function ImageFragment() {
   const horizontalScrollRef = useRef<Konva.Rect>()
   const verticalScrollRef = useRef<Konva.Rect>()
 
-  function scaleImage(zoom: boolean, point: Point) {
+  const [zoomPercent, setZoomPercent] = useState(100)
+
+  function scaleImage(newScale: number, point: Point) {
     let stage = stageRef.current
     let image = imageRef.current
 
@@ -47,10 +49,6 @@ export default function ImageFragment() {
       (pointerPosition.x - image.x()) / scale,
       (pointerPosition.y - image.y()) / scale,
     );
-
-    let newScale = zoom
-      ? scale * SCALE_COEFFICIENT
-      : scale / SCALE_COEFFICIENT
 
     let newImagePosition = p(
       pointerPosition.x - imageToPointerVector.x * newScale,
@@ -67,6 +65,8 @@ export default function ImageFragment() {
         p(stage.width(), stage.height())
       )
     }
+
+    setZoomPercent(Math.round(newScale * 100))
 
     // Redrawing
     image.scale(p(newScale, newScale))
@@ -146,26 +146,39 @@ export default function ImageFragment() {
 
   function onWheel(e) {
     let stage = stageRef.current
+    let image = imageRef.current
+
+    let scale = image.scaleX()
 
     scaleImage(
-      e.evt.deltaY < 0,
+      e.evt.deltaY < 0
+        ? scale * SCALE_COEFFICIENT
+        : scale / SCALE_COEFFICIENT,
       stage.getPointerPosition()
     )
   }
 
   function onScaleInButtonClick() {
     let stage = stageRef.current
+    let image = imageRef.current
+
+    let scale = image.scaleX()
 
     scaleImage(
-      true,
+      scale * SCALE_COEFFICIENT,
       p(stage.width() / 2, stage.height() / 2)
     )
   }
 
   function onScaleOutButtonClick() {
+    let stage = stageRef.current
+    let image = imageRef.current
+
+    let scale = image.scaleX()
+
     scaleImage(
-      false,
-      p(stageRef.current.width() / 2, stageRef.current.height() / 2)
+      scale / SCALE_COEFFICIENT,
+      p(stage.width() / 2, stage.height() / 2)
     )
   }
 
@@ -276,6 +289,9 @@ export default function ImageFragment() {
           </Layer>
         </Stage>
 
+        <div className={classes(Styles.Controller, Styles.PercentageController)}>
+          {zoomPercent}%
+        </div>
         <div className={Styles.ZoomControllers}>
           <div className={classes("material-icons", Styles.Controller)}
                onClick={onScaleInButtonClick}>
