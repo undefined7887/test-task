@@ -13,12 +13,6 @@
   width: 800px;
   border-radius: 5px;
   box-shadow: 0 10px 20px grey;
-  overflow: scroll;
-}
-
-.StageWrap {
-  height: 450px;
-  width: 800px;
   overflow: hidden;
 }
 

@@ -241,41 +241,41 @@ export default function ImageFragment() {
   return (
     <div className={Styles.Fragment}>
       <div className={Styles.Container}>
-        <div className={Styles.StageWrap}>
-          <Stage ref={stageRef} className={Styles.Stage}
-                 onWheel={onWheel}
-                 width={CONTAINER_WIDTH}
-                 height={CONTAINER_HEIGHT}>
-            <Layer>
-              <Image ref={imageRef}
-                     image={image}
-                     width={CONTAINER_WIDTH}
-                     height={CONTAINER_HEIGHT}/>
+        <Stage ref={stageRef} className={Styles.Stage}
+               onWheel={onWheel}
+               width={CONTAINER_WIDTH}
+               height={CONTAINER_HEIGHT}>
+          <Layer>
+            <Image ref={imageRef}
+                   image={image}
+                   width={CONTAINER_WIDTH}
+                   height={CONTAINER_HEIGHT}/>
 
-              <Rect ref={horizontalScrollRef}
-                    x={SCROLL_PADDING}
-                    y={CONTAINER_HEIGHT - SCROLL_PADDING - SCROLL_HEIGHT}
-                    height={SCROLL_HEIGHT}
-                    cornerRadius={SCROLL_HEIGHT / 2}
-                    draggable={true}
-                    fill="white"
-                    opacity={0.5}
-                    onDragMove={onScroll}
-                    dragBoundFunc={horizontalScrollDragBound}/>
+            <Rect ref={horizontalScrollRef}
+                  x={SCROLL_PADDING}
+                  y={CONTAINER_HEIGHT - SCROLL_PADDING - SCROLL_HEIGHT}
+                  height={SCROLL_HEIGHT}
+                  cornerRadius={SCROLL_HEIGHT / 2}
+                  draggable={true}
+                  fill="white"
+                  opacity={0.5}
+                  onDragMove={onScroll}
+                  dragBoundFunc={horizontalScrollDragBound}/>
 
-              <Rect ref={verticalScrollRef}
-                    x={CONTAINER_WIDTH - SCROLL_PADDING - SCROLL_WIDTH}
-                    y={SCROLL_PADDING}
-                    width={SCROLL_WIDTH}
-                    cornerRadius={SCROLL_WIDTH / 2}
-                    draggable={true}
-                    fill="white"
-                    opacity={0.5}
-                    onDragMove={onScroll}
-                    dragBoundFunc={verticalScrollDragBound}/>
-            </Layer>
-          </Stage>
-        </div>
+            <Rect ref={verticalScrollRef}
+                  x={CONTAINER_WIDTH - SCROLL_PADDING - SCROLL_WIDTH}
+                  y={SCROLL_PADDING}
+                  width={SCROLL_WIDTH}
+                  cornerRadius={SCROLL_WIDTH / 2}
+                  draggable={true}
+                  fill="white"
+                  opacity={0.5}
+
+                  onDragMove={onScroll}
+                  dragBoundFunc={verticalScrollDragBound}/>
+          </Layer>
+        </Stage>
+
         <div className={Styles.ZoomControllers}>
           <div className={classes("material-icons", Styles.Controller)}
                onClick={onScaleInButtonClick}>
