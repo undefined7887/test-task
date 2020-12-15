@@ -32,6 +32,8 @@
   top: 30px;
   font-family: 'Open Sans', sans-serif;
   font-weight: 400;
+  display: flex;
+  align-items: center;
 }
 
 .ResetController {
@@ -46,4 +48,13 @@
   border-radius: 5px;
   background: white;
   user-select: none;
+}
+
+.Input {
+  outline: none;
+  border: none;
+  padding: 0;
+  width: 30px;
+  margin-right: 5px;
+  text-align: center;
 }

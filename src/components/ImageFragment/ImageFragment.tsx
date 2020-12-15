@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {KeyboardEvent, ChangeEvent, useRef, useState} from "react";
 import Konva from "konva";
 import {
   Stage,
@@ -33,10 +33,11 @@ export default function ImageFragment() {
   const [image] = useImage(ImageSrc)
   const stageRef = useRef<Konva.Stage>()
   const imageRef = useRef<Konva.Image>()
+  const inputRef = useRef<HTMLInputElement>()
   const horizontalScrollRef = useRef<Konva.Rect>()
   const verticalScrollRef = useRef<Konva.Rect>()
 
-  const [zoomPercent, setZoomPercent] = useState(100)
+  const [zoomPercent, setZoomPercent] = useState("100")
 
   function scaleImage(newScale: number, point: Point) {
     let stage = stageRef.current
@@ -44,6 +45,9 @@ export default function ImageFragment() {
 
     let scale = image.scaleX()
     let pointerPosition = point
+
+    if (newScale >= 20)
+      return
 
     let imageToPointerVector = p(
       (pointerPosition.x - image.x()) / scale,
@@ -66,7 +70,7 @@ export default function ImageFragment() {
       )
     }
 
-    setZoomPercent(Math.round(newScale * 100))
+    setZoomPercent(Math.round(newScale * 100).toString())
 
     // Redrawing
     image.scale(p(newScale, newScale))
@@ -251,6 +255,26 @@ export default function ImageFragment() {
     stage.batchDraw()
   }
 
+  function onInputChange() {
+    setZoomPercent(inputRef.current.value)
+  }
+
+  function onInputKeypress(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.code !== "Enter")
+      return
+
+    let stage = stageRef.current
+    let value = parseInt(inputRef.current.value)
+
+    if (Number.isNaN(value))
+      return
+
+    scaleImage(
+       value / 100,
+      p(stage.width() / 2, stage.height() / 2)
+    )
+  }
+
   return (
     <div className={Styles.Fragment}>
       <div className={Styles.Container}>
@@ -283,14 +307,17 @@ export default function ImageFragment() {
                   draggable={true}
                   fill="white"
                   opacity={0.5}
-
                   onDragMove={onScroll}
                   dragBoundFunc={verticalScrollDragBound}/>
           </Layer>
         </Stage>
 
         <div className={classes(Styles.Controller, Styles.PercentageController)}>
-          {zoomPercent}%
+          <input ref={inputRef}
+                 className={Styles.Input}
+                 value={zoomPercent}
+                 onChange={onInputChange}
+                 onKeyPress={onInputKeypress}/>%
         </div>
         <div className={Styles.ZoomControllers}>
           <div className={classes("material-icons", Styles.Controller)}
