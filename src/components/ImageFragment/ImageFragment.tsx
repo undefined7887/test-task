@@ -169,6 +169,21 @@ export default function ImageFragment() {
     )
   }
 
+  function onScroll() {
+    let stage = stageRef.current
+    let horizontalScroll = horizontalScrollRef.current
+    let verticalScroll = verticalScrollRef.current
+
+    let totalWidth = stage.width() - SCROLL_PADDING * 2 - horizontalScroll.width()
+    let totalHeight = stage.height() - SCROLL_PADDING * 2 - verticalScroll.height()
+
+    let deltaX = (horizontalScroll.x() - SCROLL_PADDING) / totalWidth
+    let deltaY = (verticalScroll.y() - SCROLL_PADDING) / totalHeight
+
+    moveImage(p(deltaX, deltaY))
+    stage.batchDraw()
+  }
+
   function moveImage(delta: Point) {
     let stage = stageRef.current
     let image = imageRef.current
@@ -182,23 +197,6 @@ export default function ImageFragment() {
 
     // Redrawing image
     image.position(newPosition)
-
-    stage.batchDraw()
-  }
-
-  function onScroll() {
-    let stage = stageRef.current
-    let horizontalScroll = horizontalScrollRef.current
-    let verticalScroll = verticalScrollRef.current
-
-    let totalWidth = stage.width() - SCROLL_PADDING * 2 - horizontalScroll.width()
-    let totalHeight = stage.height() - SCROLL_PADDING * 2 - verticalScroll.height()
-
-    let deltaX = (horizontalScroll.x() - SCROLL_PADDING) / totalWidth
-    let deltaY = (verticalScroll.y() - SCROLL_PADDING) / totalHeight
-
-    // Redrawing image
-    moveImage(p(deltaX, deltaY))
 
     stage.batchDraw()
   }
@@ -227,6 +225,17 @@ export default function ImageFragment() {
     )
 
     return position
+  }
+
+  function onResetButtonClick() {
+    let stage = stageRef.current
+    let image = imageRef.current
+
+    image.scale(p(1, 1))
+    image.position(p(0, 0))
+
+    redrawScrolls()
+    stage.batchDraw()
   }
 
   return (
@@ -267,7 +276,7 @@ export default function ImageFragment() {
             </Layer>
           </Stage>
         </div>
-        <div className={Styles.Controllers}>
+        <div className={Styles.ZoomControllers}>
           <div className={classes("material-icons", Styles.Controller)}
                onClick={onScaleInButtonClick}>
             add
@@ -277,6 +286,10 @@ export default function ImageFragment() {
                onClick={onScaleOutButtonClick}>
             remove
           </div>
+        </div>
+        <div className={classes(Styles.Controller, Styles.ResetController, "material-icons")}
+             onClick={onResetButtonClick}>
+          close
         </div>
       </div>
     </div>
