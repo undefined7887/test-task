@@ -9,3 +9,6 @@ yarn-error.log
 # Build
 build
 node_modules
+
+# Storybook
+storybook-static

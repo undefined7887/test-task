@@ -9,6 +9,7 @@ import useImage from "use-image";
 
 import ImageSrc from "assets/image.jpg"
 import Styles from "./ImageFragment.css"
+import Icons from "assets/icons.css"
 import {classes} from "src/utils";
 
 interface Point {
@@ -270,7 +271,7 @@ export default function ImageFragment() {
       return
 
     scaleImage(
-       value / 100,
+      value / 100,
       p(stage.width() / 2, stage.height() / 2)
     )
   }
@@ -320,17 +321,17 @@ export default function ImageFragment() {
                  onKeyPress={onInputKeypress}/>%
         </div>
         <div className={Styles.ZoomControllers}>
-          <div className={classes("material-icons", Styles.Controller)}
+          <div className={classes(Icons.Icon, Styles.Controller)}
                onClick={onScaleInButtonClick}>
             add
           </div>
           <div style={{marginTop: 20}}
-               className={classes("material-icons", Styles.Controller)}
+               className={classes(Icons.Icon, Styles.Controller)}
                onClick={onScaleOutButtonClick}>
             remove
           </div>
         </div>
-        <div className={classes(Styles.Controller, Styles.ResetController, "material-icons")}
+        <div className={classes(Styles.Controller, Styles.ResetController, Icons.Icon)}
              onClick={onResetButtonClick}>
           close
         </div>
