@@ -16,6 +16,10 @@ interface Point {
   y: number
 }
 
+function p(x: number, y: number) {
+  return {x, y}
+}
+
 const SCALE_COEFFICIENT = 1.1
 
 export default function ImageFragment() {
@@ -25,72 +29,79 @@ export default function ImageFragment() {
 
   function redrawImage(zoom: boolean, coefficient: number, point: Point) {
     let stage = stageRef.current;
-    let container = containerRef.current;
+
+    let width = containerRef.current.clientWidth;
+    let height = containerRef.current.clientHeight;
 
     let scale = stage.scaleX();
     let pointerPosition = point;
 
-    let stageToPointerVector = {
-      x: (pointerPosition.x - stage.x()) / scale,
-      y: (pointerPosition.y - stage.y()) / scale,
-    };
+    let stageToPointerVector = p(
+      (pointerPosition.x - stage.x()) / scale,
+      (pointerPosition.y - stage.y()) / scale,
+    );
 
     let newScale = zoom
       ? scale * coefficient
       : scale / coefficient;
 
-    let newStagePosition = {
-      x: pointerPosition.x - stageToPointerVector.x * newScale,
-      y: pointerPosition.y - stageToPointerVector.y * newScale,
-    };
+    let newStagePosition = p(
+      pointerPosition.x - stageToPointerVector.x * newScale,
+      pointerPosition.y - stageToPointerVector.y * newScale,
+    );
 
-    // If image smaller than box
     if (newScale <= 1) {
       newScale = 1
-      newStagePosition = {x: 0, y: 0}
+      newStagePosition = p(0, 0)
     } else {
-      let leftTop = {
-        x: newStagePosition.x,
-        y: newStagePosition.y
-      }
-
-      let rightTop = {
-        x: newStagePosition.x + stage.width() * newScale,
-        y: newStagePosition.y
-      }
-
-      let leftBottom = {
-        x: newStagePosition.x,
-        y: newStagePosition.y + stage.height() * newScale
-      }
-
-      let rightBottom = {
-        x: newStagePosition.x + stage.width() * newScale,
-        y: newStagePosition.y + stage.height() * newScale
-      }
-
-      if (leftTop.x > 0 || leftBottom.x > 0) {
-        newStagePosition.x = 0
-      }
-
-      if (leftTop.y > 0 || rightTop.y > 0) {
-        newStagePosition.y = 0
-      }
-
-      if (rightTop.x < container.clientWidth || rightBottom.x < container.clientWidth) {
-        newStagePosition.x = container.clientWidth - stage.width() * newScale
-      }
-
-      if (leftBottom.y < container.clientHeight || rightBottom.y < container.clientHeight) {
-        newStagePosition.y = container.clientHeight - stage.height() * newScale
-      }
+      newStagePosition = imagePositionGuard(
+        p(width, height),
+        newScale,
+        newStagePosition
+      )
     }
 
     // Redrawing
-    stage.scale({x: newScale, y: newScale});
+    stage.scale(p(newScale, newScale));
     stage.position(newStagePosition);
 
+    console.log("redraw", newScale, newStagePosition)
+
     stage.batchDraw();
+  }
+
+  function imagePositionGuard(size: Point, scale: number, stagePosition: Point): Point {
+    let leftTop = p(
+      stagePosition.x,
+      stagePosition.y
+    )
+    let rightTop = p(
+      stagePosition.x + size.x * scale,
+      stagePosition.y
+    )
+
+    let leftBottom = p(
+      stagePosition.x,
+      stagePosition.y + size.y * scale
+    )
+    let rightBottom = p(
+      stagePosition.x + size.x * scale,
+      stagePosition.y + size.y * scale
+    )
+
+    if (leftTop.x > 0 || leftBottom.x > 0)
+      stagePosition.x = 0
+
+    if (leftTop.y > 0 || rightTop.y > 0)
+      stagePosition.y = 0
+
+    if (rightTop.x < size.x || rightBottom.x < size.x)
+      stagePosition.x = size.x - size.x * scale
+
+    if (leftBottom.y < size.y || rightBottom.y < size.y)
+      stagePosition.y = size.y - size.y * scale
+
+    return stagePosition
   }
 
   function onWheel(e) {
