@@ -252,6 +252,8 @@ export default function ImageFragment() {
     image.scale(p(1, 1))
     image.position(p(0, 0))
 
+    setZoomPercent("100")
+
     redrawScrolls()
     stage.batchDraw()
   }
